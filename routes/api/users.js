@@ -108,7 +108,7 @@ router.post('/login', (req, res) => {
         }
       });
     })
-    .catch();
+    .catch(err => console.log(err));
 });
 
 // @route   GET api/users/current
