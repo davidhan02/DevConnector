@@ -3,6 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+// Load Validation
+const validateProfileInput = require('../../validation/profile');
+
 // Load Profile Model
 const Profile = require('../../models/Profile');
 // Load User Model
@@ -23,6 +26,7 @@ router.get(
     const errors = {};
 
     Profile.findOne({ user: req.user.id })
+      .populate('user', ['name', 'avatar'])
       .then(profile => {
         if (!profile) {
           errors.noprofile = 'There is no profile for this user';
@@ -37,43 +41,46 @@ router.get(
 // @route   POST api/profile
 // @desc    Create OR Edit user profile
 // @access  Private
-router.get(
+router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    // Get fields
-    const profileFields = {};
-    profileFields.user = req.user.id;
-    if (req.body.handle) profileFields.handle = req.body.handle;
-    if (req.body.company) profileFields.company = req.body.company;
-    if (req.body.website) profileFields.website = req.body.website;
-    if (req.body.location) profileFields.location = req.body.location;
-    if (req.body.bio) profileFields.bio = req.body.bio;
-    if (req.body.status) profileFields.status = req.body.status;
-    if (req.body.githubusername)
-      profileFields.githubusername = req.body.githubusername;
-    // Skills - Split into an Array
-    if (typeof req.body.skills !== 'undefined') {
-      profileFields.skills = req.body.skills.split(',');
-    }
-    // Social
-    profileFields.social = {};
-    if (req.body.youtube) profileFields.social.youtube = req.body.youtube;
-    if (req.body.twitter) profileFields.social.twitter = req.body.twitter;
-    if (req.body.facebook) profileFields.social.facebook = req.body.facebook;
-    if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
-    if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
+    const { errors, isValid } = validateProfileInput(req.body);
 
+    // Check Validation
+    if (!isValid) {
+      // Return any errors
+      return res.status(400).json(errors);
+    }
+    // Desctructure
+    const {
+      skills,
+      youtube,
+      twitter,
+      facebook,
+      linkedin,
+      instagram
+    } = req.body;
+
+    // Create Profile fields object
+    const profileFields = {
+      ...req.body,
+      user: req.user.id,
+      skills: skills.split(','),
+      social: { youtube, twitter, facebook, linkedin, instagram }
+    };
+
+    // Search for Profile by User ID
     Profile.findOne({ user: req.user.id }).then(profile => {
       if (profile) {
-        // Update
+        // Update Profile
         Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
         ).then(profile => res.json(profile));
       } else {
-        // Create
+        // Create Profile
         // Check if handle exists
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
           if (profile) {
