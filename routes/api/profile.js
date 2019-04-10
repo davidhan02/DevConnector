@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false); // Fix for bug
 const passport = require('passport');
 
 // Load Validation
@@ -32,7 +33,7 @@ router.get(
           errors.noprofile = 'There is no profile for this user';
           return res.status(404).json(errors);
         }
-        res.json(profile);
+        return res.json(profile);
       })
       .catch(err => res.status(404).json(err));
   }
@@ -51,7 +52,7 @@ router.get('/all', (req, res) => {
         errors.noprofile = 'There are no profiles';
         return res.status(404).json(errors);
       }
-      res.json(profiles);
+      return res.json(profiles);
     })
     .catch(err => res.status(404).json({ profile: 'There are no profiles' }));
 });
@@ -67,9 +68,9 @@ router.get('/handle/:handle', (req, res) => {
     .then(profile => {
       if (!profile) {
         errors.noprofile = 'There is no profile for this user';
-        res.status(404).json(errors);
+        return res.status(404).json(errors);
       }
-      res.json(profile);
+      return res.json(profile);
     })
     .catch(err => res.status(404).json(err));
 });
@@ -85,9 +86,9 @@ router.get('/user/:user_id', (req, res) => {
     .then(profile => {
       if (!profile) {
         errors.noprofile = 'There is no profile for this user';
-        res.status(404).json(errors);
+        return res.status(404).json(errors);
       }
-      res.json(profile);
+      return res.json(profile);
     })
     .catch(err =>
       res.status(404).json({ profile: 'There is no profile for this user' })
@@ -141,7 +142,7 @@ router.post(
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
           if (profile) {
             errors.handle = 'That handle already exists';
-            res.status(400).json(errors);
+            return res.status(400).json(errors);
           }
           // Otherwise, Create & Save Profile
           new Profile(profileFields).save().then(profile => res.json(profile));
