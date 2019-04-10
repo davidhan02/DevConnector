@@ -1,2 +1,4 @@
+/client
 /node_modules
+/devconnector_theme
 package-lock.json
