@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import TextFieldGroup from '../common/TextFieldGroup';
 import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import InputGroup from '../common/InputGroup';
 import SelectListGroup from '../common/SelectListGroup';
+import { createProfile } from '../../actions/profileActions';
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -28,10 +30,34 @@ class CreateProfile extends Component {
     };
   }
 
+  // THIS IS WHERE YOU PUT PROPS TO COMPONENT STATE
+  // YOU ALREADY PUT REDUX STATE TO PROPS AT BOTTOM
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+
   onSubmit = e => {
     e.preventDefault();
 
-    console.log('submit');
+    const profileData = {
+      handle: this.state.handle,
+      company: this.state.company,
+      website: this.state.website,
+      location: this.state.location,
+      status: this.state.status,
+      skills: this.state.skills,
+      githubusername: this.state.githubusername,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedin: this.state.linkedin,
+      youtube: this.state.youtube,
+      instagram: this.state.instagram
+    };
+
+    this.props.createProfile(profileData, this.props.history);
   };
 
   onChange = e => {
@@ -127,7 +153,7 @@ class CreateProfile extends Component {
                 />
                 <SelectListGroup
                   placeholder="Status"
-                  name="handle"
+                  name="status"
                   value={this.state.status}
                   onChange={this.onChange}
                   options={options}
@@ -156,7 +182,7 @@ class CreateProfile extends Component {
                   value={this.state.location}
                   onChange={this.onChange}
                   error={errors.location}
-                  info="City or city & state suggested (eg. Bostone, MA)"
+                  info="City or city & state suggested (eg. Boston, MA)"
                 />
                 <TextFieldGroup
                   placeholder="* Skills"
@@ -174,7 +200,7 @@ class CreateProfile extends Component {
                   error={errors.githubusername}
                   info="If you want your latest repos and a Github link, include your username."
                 />
-                <TextFieldGroup
+                <TextAreaFieldGroup
                   placeholder="Short Bio"
                   name="bio"
                   value={this.state.bio}
@@ -185,6 +211,7 @@ class CreateProfile extends Component {
 
                 <div className="mb-3">
                   <button
+                    type="button"
                     onClick={() => {
                       this.setState(prevState => ({
                         // Toggle
@@ -195,7 +222,7 @@ class CreateProfile extends Component {
                   >
                     Add Social Network Links
                   </button>
-                  <span className="text-muted">Optional</span>
+                  <span className="text-muted"> Optional</span>
                 </div>
                 {socialInputs}
 
@@ -223,4 +250,7 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(CreateProfile);
+export default connect(
+  mapStateToProps,
+  { createProfile }
+)(withRouter(CreateProfile));
