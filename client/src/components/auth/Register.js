@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { registerUser } from '../../actions';
 
@@ -38,6 +38,11 @@ class Register extends Component {
 
   render() {
     const { errors } = this.state;
+
+    // If user's logged in, redirect to dashboard
+    if (this.props.auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
 
     return (
       <div className="register">

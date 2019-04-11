@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { loginUser } from '../../actions';
 
 class Login extends Component {
@@ -38,6 +39,11 @@ class Login extends Component {
 
   render() {
     const { errors } = this.state;
+
+    // If user's logged in, redirect to dashboard
+    if (this.props.auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
 
     return (
       <div className="login">
