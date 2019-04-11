@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Register extends Component {
   constructor() {
@@ -23,7 +24,11 @@ class Register extends Component {
     // Assign variables to new User
     const newUser = { name, email, password, password2 };
 
-    console.log(newUser);
+    // Post with axios
+    axios // No need for localhost:5000 because of proxy value in package.json
+      .post('api/users/register', newUser)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data));
   };
 
   render() {
