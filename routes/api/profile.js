@@ -127,7 +127,7 @@ router.post(
     const profileFields = {
       ...req.body,
       user: req.user.id,
-      skills: skills.split(','),
+      skills: skills.trim().split(','),
       social: {}
     };
 
