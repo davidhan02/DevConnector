@@ -6,8 +6,6 @@ class ProfileGithub extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      clientId: '89622aa32604e0898c4e',
-      clientSecret: 'd4be4d4e70092b5c79cffc744489ebbbaf27b9bc',
       count: 5,
       sort: 'created: asc',
       repos: []
@@ -16,10 +14,10 @@ class ProfileGithub extends Component {
 
   componentDidMount() {
     const { username } = this.props;
-    const { count, sort, clientId, clientSecret } = this.state;
+    const { count, sort } = this.state;
 
     fetch(
-      `https://api.github.com/users/${username}/repos?per_page=${count}&sort=${sort}&client_id=${clientId}&client_secret=${clientSecret}`
+      `https://api.github.com/users/${username}/repos?per_page=${count}&sort=${sort}`
     )
       .then(res => res.json())
       .then(data => {
