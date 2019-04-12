@@ -66,7 +66,7 @@ class AddExperience extends Component {
               <Link to="/dashboard" className="btn btn-light">
                 Go Back
               </Link>
-              <h1 className="display-4 text-center">Add experience</h1>
+              <h1 className="display-4 text-center">Add Experience</h1>
               <p className="lead text-center">
                 Add any job or position that you have had in the past or current
               </p>
@@ -130,6 +130,7 @@ class AddExperience extends Component {
                   value={this.state.description}
                   onChange={this.onChange}
                   error={errors.description}
+                  info="Tell us about this Company and your work there"
                 />
                 <input
                   type="submit"
