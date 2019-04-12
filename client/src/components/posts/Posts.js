@@ -20,9 +20,7 @@ class Posts extends Component {
     } else {
       postContent = <PostFeed posts={posts} />;
     }
-  }
 
-  render() {
     return (
       <div className="feed">
         <div className="container">
