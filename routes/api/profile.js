@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false); // Fix for bug
 const passport = require('passport');
+const prependHttp = require('prepend-http');
 
 // Load Validation
 const validateProfileInput = require('../../validation/profile');
@@ -114,6 +115,7 @@ router.post(
     // Desctructure
     const {
       skills,
+      website,
       youtube,
       twitter,
       facebook,
@@ -126,8 +128,33 @@ router.post(
       ...req.body,
       user: req.user.id,
       skills: skills.split(','),
-      social: { youtube, twitter, facebook, linkedin, instagram }
+      social: {}
     };
+
+    if (website)
+      profileFields.website = prependHttp(website, {
+        https: true
+      });
+    if (youtube)
+      profileFields.social.youtube = prependHttp(youtube, {
+        https: true
+      });
+    if (twitter)
+      profileFields.social.twitter = prependHttp(twitter, {
+        https: true
+      });
+    if (facebook)
+      profileFields.social.facebook = prependHttp(facebook, {
+        https: true
+      });
+    if (linkedin)
+      profileFields.social.linkedin = prependHttp(linkedin, {
+        https: true
+      });
+    if (instagram)
+      profileFields.social.instagram = prependHttp(instagram, {
+        https: true
+      });
 
     // Search for Profile by User ID
     Profile.findOne({ user: req.user.id }).then(profile => {
