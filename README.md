@@ -1,7 +1,7 @@
 # DevConnector
 Practice full stack social network MERN Web App. Use of MongoDB, Express, React, Redux, and Node.
 
-Live Heroku deployment: https://dashboard.heroku.com/apps/pure-stream-95176
+Live Heroku deployment: https://pure-stream-95176.herokuapp.com/
 
 ## Quick Start
 
